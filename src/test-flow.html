@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        img { max-width: 200px; margin: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Fashion TryOn Studio - Flow Test</h1>
+    
+    <div id="test-results"></div>
+    
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="testImageGeneration()">Test Image Generation</button>
+    <button onclick="testImageUpload()">Test Image Upload</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function addResult(title, success, message, data = null) {
+            const div = document.createElement('div');
+            div.className = `test-section ${success ? 'success' : 'error'}`;
+            div.innerHTML = `
+                <h3>${success ? '✅' : '❌'} ${title}</h3>
+                <p>${message}</p>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+            results.appendChild(div);
+            
+            console.log(`${success ? '✅' : '❌'} ${title}:`, message, data);
+        }
+        
+        function clearResults() {
+            results.innerHTML = '';
+            console.clear();
+        }
+        
+        // Test 1: Canvas Image Generation
+        function testImageGeneration() {
+            console.log('🧪 Testing image generation...');
+            
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 600;
+                const ctx = canvas.getContext('2d');
+                
+                if (!ctx) {
+                    throw new Error('Canvas context not available');
+                }
+                
+                // Background gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, 600);
+                gradient.addColorStop(0, '#f3e8ff');
+                gradient.addColorStop(1, '#e0e7ff');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 400, 600);
+                
+                // Add text
+                ctx.fillStyle = '#374151';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('AI Try-On Result', 200, 280);
+                
+                ctx.font = '16px Arial';
+                ctx.fillText('Professional Fashion AI', 200, 320);
+                ctx.fillText('Ready for E-commerce', 200, 350);
+                ctx.fillText(`Generated: ${new Date().toLocaleTimeString()}`, 200, 380);
+                
+                const imageUrl = canvas.toDataURL('image/png');
+                
+                // Display the generated image
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = 'Generated test image';
+                
+                addResult(
+                    'Canvas Image Generation',
+                    true,
+                    'Successfully generated canvas image',
+                    {
+                        imageUrlLength: imageUrl.length,
+                        imageUrlPreview: imageUrl.substring(0, 50) + '...',
+                        canvasSize: { width: canvas.width, height: canvas.height }
+                    }
+                );
+                
+                results.lastElementChild.appendChild(img);
+                
+            } catch (error) {
+                addResult(
+                    'Canvas Image Generation',
+                    false,
+                    `Failed to generate image: ${error.message}`,
+                    { error: error.toString() }
+                );
+            }
+        }
+        
+        // Test 2: File Upload Simulation
+        function testImageUpload() {
+            console.log('🧪 Testing image upload simulation...');
+            
+            try {
+                // Create a test canvas image to simulate upload
+                const canvas = document.createElement('canvas');
+                canvas.width = 300;
+                canvas.height = 400;
+                const ctx = canvas.getContext('2d');
+                
+                if (!ctx) {
+                    throw new Error('Canvas context not available');
+                }
+                
+                // Create a simple test image
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillRect(0, 0, 300, 400);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Test Upload', 150, 200);
+                
+                const dataUrl = canvas.toDataURL('image/png');
+                const [header, base64] = dataUrl.split(',');
+                const mimeType = header.match(/:(.*?);/)?.[1] ?? 'image/png';
+                
+                const imageData = {
+                    base64,
+                    mimeType,
+                    name: 'test-upload.png'
+                };
+                
+                // Display the test upload
+                const img = document.createElement('img');
+                img.src = dataUrl;
+                img.alt = 'Test upload image';
+                
+                addResult(
+                    'Image Upload Simulation',
+                    true,
+                    'Successfully simulated image upload process',
+                    {
+                        name: imageData.name,
+                        mimeType: imageData.mimeType,
+                        base64Length: imageData.base64.length,
+                        base64Preview: imageData.base64.substring(0, 50) + '...'
+                    }
+                );
+                
+                results.lastElementChild.appendChild(img);
+                
+            } catch (error) {
+                addResult(
+                    'Image Upload Simulation',
+                    false,
+                    `Failed to simulate upload: ${error.message}`,
+                    { error: error.toString() }
+                );
+            }
+        }
+        
+        // Test 3: Full Flow Simulation
+        async function testFullFlow() {
+            console.log('🧪 Testing full flow simulation...');
+            
+            try {
+                // Simulate user image
+                const userCanvas = document.createElement('canvas');
+                userCanvas.width = 300;
+                userCanvas.height = 400;
+                const userCtx = userCanvas.getContext('2d');
+                userCtx.fillStyle = '#4ecdc4';
+                userCtx.fillRect(0, 0, 300, 400);
+                userCtx.fillStyle = '#ffffff';
+                userCtx.font = '16px Arial';
+                userCtx.textAlign = 'center';
+                userCtx.fillText('User Photo', 150, 200);
+                
+                const userDataUrl = userCanvas.toDataURL('image/png');
+                const [userHeader, userBase64] = userDataUrl.split(',');
+                const userImageData = {
+                    base64: userBase64,
+                    mimeType: 'image/png',
+                    name: 'user-photo.png'
+                };
+                
+                // Simulate garment image
+                const garmentCanvas = document.createElement('canvas');
+                garmentCanvas.width = 300;
+                garmentCanvas.height = 400;
+                const garmentCtx = garmentCanvas.getContext('2d');
+                garmentCtx.fillStyle = '#45b7d1';
+                garmentCtx.fillRect(0, 0, 300, 400);
+                garmentCtx.fillStyle = '#ffffff';
+                garmentCtx.font = '16px Arial';
+                garmentCtx.textAlign = 'center';
+                garmentCtx.fillText('Garment', 150, 200);
+                
+                const garmentDataUrl = garmentCanvas.toDataURL('image/png');
+                const [garmentHeader, garmentBase64] = garmentDataUrl.split(',');
+                const garmentImageData = {
+                    base64: garmentBase64,
+                    mimeType: 'image/png',
+                    name: 'garment.png'
+                };
+                
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Generate result image
+                const resultCanvas = document.createElement('canvas');
+                resultCanvas.width = 400;
+                resultCanvas.height = 600;
+                const resultCtx = resultCanvas.getContext('2d');
+                
+                const gradient = resultCtx.createLinearGradient(0, 0, 0, 600);
+                gradient.addColorStop(0, '#f3e8ff');
+                gradient.addColorStop(1, '#e0e7ff');
+                resultCtx.fillStyle = gradient;
+                resultCtx.fillRect(0, 0, 400, 600);
+                
+                resultCtx.fillStyle = '#374151';
+                resultCtx.font = 'bold 24px Arial';
+                resultCtx.textAlign = 'center';
+                resultCtx.fillText('AI Try-On Result', 200, 280);
+                resultCtx.font = '16px Arial';
+                resultCtx.fillText('Professional Fashion AI', 200, 320);
+                resultCtx.fillText(`Generated: ${new Date().toLocaleTimeString()}`, 200, 350);
+                
+                const resultImageUrl = resultCanvas.toDataURL('image/png');
+                const generatedImage = {
+                    imageUrl: resultImageUrl,
+                    altText: 'AI generated try-on result'
+                };
+                
+                // Display all images
+                const userImg = document.createElement('img');
+                userImg.src = userDataUrl;
+                userImg.alt = 'User image';
+                userImg.title = 'User Image';
+                
+                const garmentImg = document.createElement('img');
+                garmentImg.src = garmentDataUrl;
+                garmentImg.alt = 'Garment image';
+                garmentImg.title = 'Garment Image';
+                
+                const resultImg = document.createElement('img');
+                resultImg.src = resultImageUrl;
+                resultImg.alt = 'Result image';
+                resultImg.title = 'Generated Result';
+                
+                addResult(
+                    'Full Flow Simulation',
+                    true,
+                    'Successfully completed full try-on flow simulation',
+                    {
+                        userImage: { name: userImageData.name, size: userImageData.base64.length },
+                        garmentImage: { name: garmentImageData.name, size: garmentImageData.base64.length },
+                        generatedImage: { altText: generatedImage.altText, size: generatedImage.imageUrl.length }
+                    }
+                );
+                
+                const container = results.lastElementChild;
+                const imageContainer = document.createElement('div');
+                imageContainer.innerHTML = '<p><strong>Flow: User + Garment → Result</strong></p>';
+                imageContainer.appendChild(userImg);
+                imageContainer.appendChild(garmentImg);
+                imageContainer.appendChild(resultImg);
+                container.appendChild(imageContainer);
+                
+            } catch (error) {
+                addResult(
+                    'Full Flow Simulation',
+                    false,
+                    `Failed to complete flow: ${error.message}`,
+                    { error: error.toString() }
+                );
+            }
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            console.log('🚀 Running all tests...');
+            
+            testImageGeneration();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            testImageUpload();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testFullFlow();
+            
+            console.log('✅ All tests completed');
+        }
+        
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            console.log('🧪 Fashion TryOn Studio - Flow Test Page Loaded');
+            addResult('Page Load', true, 'Test page loaded successfully');
+        });
+    </script>
+</body>
+</html>
